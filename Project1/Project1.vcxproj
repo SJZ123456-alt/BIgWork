@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AppState.h" />
+    <ClCompile Include="Building.h" />
+    <ClCompile Include="CampusMap.h" />
     <ClCompile Include="FileName.cpp" />
     <ClCompile Include="Linkedlist.h" />
   </ItemGroup>

@@ -15,7 +15,7 @@ public:
     Seqlist(const Seqlist& s);
     ~Seqlist();
 
-    void insert(const T& e);
+    void push_back(const T& e);
 
     void remove();
     void remove(T& value);
@@ -25,6 +25,10 @@ public:
     void update(T& target, T& value);
 
     void read() const;
+
+    int get_size() const;
+
+    T& operator[](int i);
 };
 
 
@@ -58,7 +62,7 @@ Seqlist<T>::~Seqlist() {
 }
 
 template<typename T>
-void Seqlist<T>::insert(const T& e) {
+void Seqlist<T>::push_back(const T& e) {
     if (capacity == size) {
         int newCapacity = capacity * 2 + 1;
         T* newElements = new T[newCapacity];
@@ -156,4 +160,15 @@ void Seqlist<T>::read() const {
     for (int i = 0; i < size; i++) {
         std::cout << elements[i] << std::endl;
     }
+}
+
+template<typename T>
+inline int Seqlist<T>::get_size() const
+{
+    return size;
+}
+
+template<typename T>
+T& Seqlist<T>::operator[](int i) {
+    return elements[i];
 }
