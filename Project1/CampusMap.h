@@ -1,7 +1,7 @@
 #pragma once
 #include "Building.h"
 #include "Seqlist.h"
-
+//---------------------------------------实现一个校园里不同建筑的储存------------------------------//
 class CampusMap {
 protected:
 	int ID;

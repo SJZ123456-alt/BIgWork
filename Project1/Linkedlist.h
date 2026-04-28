@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 
+//------------------------------------------------链表形式的线性表--------------------------------------------//
 template<class T>
 class LinkedList {
 public:

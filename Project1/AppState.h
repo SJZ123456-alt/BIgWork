@@ -1,6 +1,7 @@
 #pragma once
 #include "CampusMap.h"
 #include "Linkedlist.h"
+//---------------------实现不同学校的在链表中的储存-------------------------------//
 class AppState {
 public:
     LinkedList<CampusMap> maps;

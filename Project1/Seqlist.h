@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 
+//------------------------------------------------顺序表形式的线性表--------------------------------------------//
 template <typename T>
 class Seqlist {
 protected:
@@ -80,10 +81,8 @@ void Seqlist<T>::push_back(const T& e) {
     if (capacity == size) {
         int newCapacity = capacity * 2 + 1;
         T* newElements = new T[newCapacity];
-        if (elements != nullptr && size > 0) {
-            for (int i = 0; i < size; i++) {
-                newElements[i] = elements[i];
-            }
+        for (int i = 0; i < size; i++) {
+            newElements[i] = elements[i];
         }
         delete[] elements;
         elements = newElements;

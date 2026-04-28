@@ -2,7 +2,7 @@
 #include "Seqlist.h"
 #include <iostream>
 #include <string>
-
+//-------------------------------------对于建筑的定义-----------------------------------------------//
 class Building {
 public:
 	double x;
