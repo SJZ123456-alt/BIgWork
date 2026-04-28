@@ -11,17 +11,17 @@ protected:
 	Seqlist<Building> building;
 	int nextID;
 public:
-	double getWidth() const { return W; }
-	double getLength() const { return L; }
+	double getWidth() const { return W; }								//获取宽度
+	double getLength() const { return L; }								//获取长度
 	CampusMap();
-	CampusMap(std::string name,double L, double W);
-	bool AddBuilding(const Building& b);
-	bool is_not_conflict(const Building& a, const Building& b);
-	void PrintAll();
-	void RemoveLast();
-	CampusMap(const CampusMap& other);
-	bool operator==(const CampusMap& c)const;
-	Building* getBuildingAt(double px, double py);
+	CampusMap(std::string name,double L, double W);						
+	bool AddBuilding(const Building& b);								//添加建筑
+	bool is_not_conflict(const Building& a, const Building& b);			//判断新添加进来的建筑是否与原来的建筑有重合
+	void PrintAll();													//打印building里所有元素
+	void RemoveLast();													//去除builidng中最后一个元素
+	CampusMap(const CampusMap& other);									//拷贝构造函数			
+	bool operator==(const CampusMap& c)const;							//重定义相等==
+	Building* getBuildingAt(double px, double py);						//根据点击/悬停坐标找建筑
 };
 
 inline void CampusMap::PrintAll(){
@@ -85,7 +85,7 @@ inline bool CampusMap::operator==(const CampusMap& c)const {
 	return ID == c.ID && name == c.name;
 }
 
-//根据点击/悬停坐标找建筑
+
 inline Building* CampusMap::getBuildingAt(double px, double py) {
 	for (int i = 0; i < building.get_size(); i++) {
 		if (building[i].contains(px, py)) {

@@ -18,14 +18,14 @@ public:
     LinkedList();
     ~LinkedList();
 
-    void add(T e);
-    void remove(T e);
-    void remove(int index);
-    void clear();
-    void display() const;
-    int size() const;
+    void add(T e);                      //在链表尾部添加一个元素是e
+    void remove(T e);                   //去除链表尾部最后一个元素
+    void remove(int index);             //去除序列号为index的元素
+    void clear();                       //全部清除，剩下一个头结点
+    void display() const;               //把链表中所有元素输出一遍
+    int size() const;                   //获取链表大小
 
-    T& operator[](int index)const;
+    T& operator[](int index)const;      //用索引获取元素
 };
 
 template<class T>

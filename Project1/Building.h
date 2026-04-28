@@ -16,10 +16,10 @@ public:
 	Building();
 	Building(double x, double y, double l, double w, int id, std::string name,std::string type);
 
-	Building& operator=(const Building& b);
-	bool operator==(const Building& b)const;
-	bool contains(double px, double py)const;
-	friend std::ostream& operator<<(std::ostream& cout,const Building& b);
+	Building& operator=(const Building& b);										//重定义赋值=
+	bool operator==(const Building& b)const;									//重定义赋值==
+	bool contains(double px, double py)const;									//判断鼠标是否在建筑内部
+	friend std::ostream& operator<<(std::ostream& cout,const Building& b);		//重定义输出<<
 };
 
 inline Building::Building():x(0),y(0),length(0),width(0),id(0),name(""),type(""){}

@@ -11,24 +11,24 @@ protected:
 
 public:
     Seqlist();
-    Seqlist(int cap);
-    Seqlist(const Seqlist& s);
+    Seqlist(int cap);                               //数入一个capacity确定数组大小
+    Seqlist(const Seqlist& s);                      //拷贝构造函数
     ~Seqlist();
-    Seqlist<T>& operator=(const Seqlist& s);
-    void push_back(const T& e);
+    Seqlist<T>& operator=(const Seqlist& s);        
+    void push_back(const T& e);                     //在列表尾部添加元素
 
-    void remove();
-    void remove(T& value);
-    void remove(int index);
+    void remove();                                  //去除列表尾部最后一个元素
+    void remove(T& value);                          //去除值为value的元素
+    void remove(int index);                         //去除索引为index的元素
 
-    void update(int index, T& value);
-    void update(T& target, T& value);
+    void update(int index, T& value);               //在index位置添加一个值为value的值
+    void update(T& target, T& value);               //将原本值为target的元素替换成值为value的元素
 
-    void read() const;
+    void read() const;                              //打印所有元素
 
-    int get_size() const;
+    int get_size() const;                           //获取列表大小
 
-    T& operator[](int i)const;
+    T& operator[](int i)const;                      //用索引获取元素
 };
 
 
@@ -80,8 +80,10 @@ void Seqlist<T>::push_back(const T& e) {
     if (capacity == size) {
         int newCapacity = capacity * 2 + 1;
         T* newElements = new T[newCapacity];
-        for (int i = 0; i < size; i++) {
-            newElements[i] = elements[i];
+        if (elements != nullptr && size > 0) {
+            for (int i = 0; i < size; i++) {
+                newElements[i] = elements[i];
+            }
         }
         delete[] elements;
         elements = newElements;
