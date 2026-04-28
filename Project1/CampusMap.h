@@ -1,3 +1,4 @@
+#pragma once
 #include "Building.h"
 #include "Seqlist.h"
 
@@ -15,6 +16,8 @@ public:
 	bool is_not_conflict(const Building& a, const Building& b);
 	void PrintAll();
 	void RemoveLast();
+	CampusMap(const CampusMap& other);
+	bool operator==(const CampusMap& c)const;
 };
 
 inline void CampusMap::PrintAll(){
@@ -27,8 +30,17 @@ inline void CampusMap::RemoveLast(){
 	building.remove();
 }
 
+inline CampusMap::CampusMap(const CampusMap& other){
+		this->ID = other.ID;
+		this->name = other.name;
+		this->L = other.L;
+		this->W = other.W;
+		this->building = other.building;
+		this->nextID = other.nextID;
+}
+
 bool CampusMap::is_not_conflict(const Building& a, const Building& b) {
-	return !((a.x + a.length <= b.x) || 
+	return ((a.x + a.length <= b.x) || 
 		(a.x >= b.x + b.length) || 
 		(a.y + a.width <= b.y) || 
 		(a.y >= b.y + b.width)    
@@ -36,6 +48,7 @@ bool CampusMap::is_not_conflict(const Building& a, const Building& b) {
 }
 
 bool CampusMap::AddBuilding(const Building& b) {
+	Building temp = b;
 	if (b.x < 0 || b.y < 0 || b.x + b.length > L || b.y + b.width > W) {
 		return false;
 	}
@@ -44,11 +57,17 @@ bool CampusMap::AddBuilding(const Building& b) {
 			return false; 
 		}
 	}
-	building.push_back(b);
+	temp.id = nextID++;
+	building.push_back(temp);
 	return true;
 }
 inline CampusMap::CampusMap(std::string name, int L, int W){
 	this->name = name;
 	this->L = L;
 	this->W = W;
+	this->ID = 0;
+}
+
+bool CampusMap::operator==(const CampusMap& c)const {
+	return ID == c.ID && name == c.name;
 }

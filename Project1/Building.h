@@ -1,3 +1,4 @@
+#pragma once
 #include "Seqlist.h"
 #include <iostream>
 #include <string>

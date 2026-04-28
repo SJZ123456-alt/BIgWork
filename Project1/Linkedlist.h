@@ -1,8 +1,9 @@
+#pragma once
 #include <iostream>
 
 template<class T>
 class LinkedList {
-private:
+public:
     struct Node {
         T data;
         Node* next;
@@ -19,9 +20,12 @@ public:
 
     void add(T e);
     void remove(T e);
+    void remove(int index);
     void clear();
     void display() const;
     int size() const;
+
+    T& operator[](int index)const;
 };
 
 template<class T>
@@ -63,6 +67,20 @@ void LinkedList<T>::remove(T e) {
 }
 
 template<class T>
+inline void LinkedList<T>::remove(int index){
+    if (index <= 0 || index > length) {
+        return;
+    }
+    Node* cur = head->next;
+    for (int i = 0; i < index - 1; i++) {
+        cur = cur->next;
+    }
+    Node* temp = cur->next;
+    cur = cur->next->next;
+    delete temp;
+}
+
+template<class T>
 void LinkedList<T>::clear() {
     Node* current = head->next;
     while (current != nullptr) {
@@ -87,4 +105,16 @@ void LinkedList<T>::display() const {
 template<class T>
 int LinkedList<T>::size() const {
     return length;
+}
+
+template<class T>
+T& LinkedList<T>::operator[](int index) const{
+    if (index > length || index < 0) {
+        throw std::out_of_range("您输入的节点不存在，请重新输入！\n");
+    }
+    Node* cur = head->next;
+    for (int i = 0; i < index; i++) {
+        cur = cur->next;
+    }
+    return cur->data;
 }

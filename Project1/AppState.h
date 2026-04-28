@@ -1,3 +1,4 @@
+#pragma once
 #include "CampusMap.h"
 #include "Linkedlist.h"
 class AppState {
@@ -5,18 +6,16 @@ public:
     LinkedList<CampusMap> maps;
     CampusMap* currentMap = nullptr;
 
-    void createNewMap();
+    void addMap(std::string name, int l, int w);
+    void selectMap(int index);
 };
 
-void AppState::createNewMap() {
-    std::string mName;
-    int mL, mW;
-    std::cout << "--- 创建新地图 ---\n";
-    std::cout << "请输入学校名称: "; std::cin >> mName;
-    std::cout << "请输入地图长度 L: "; std::cin >> mL;
-    std::cout << "请输入地图宽度 W: "; std::cin >> mW;
-
-    CampusMap newMap(mName, mL, mW);
+void AppState::addMap(std::string name, int l, int w) {
+    CampusMap newMap(name, l, w);
     maps.add(newMap);
-    std::cout << "地图 [" << mName << "] 创建成功！\n";
+}
+
+inline void AppState::selectMap(int index)
+{
+    currentMap = &maps[index];
 }

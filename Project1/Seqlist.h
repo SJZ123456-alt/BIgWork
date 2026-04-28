@@ -14,7 +14,7 @@ public:
     Seqlist(int cap);
     Seqlist(const Seqlist& s);
     ~Seqlist();
-
+    Seqlist<T>& operator=(const Seqlist& s);
     void push_back(const T& e);
 
     void remove();
@@ -59,6 +59,20 @@ Seqlist<T>::Seqlist(const Seqlist& s) {
 template<typename T>
 Seqlist<T>::~Seqlist() {
     delete[] elements;
+}
+
+template<typename T>
+Seqlist<T>& Seqlist<T>::operator=(const Seqlist& s) {
+    if (this != &s) { 
+        delete[] elements; 
+        capacity = s.capacity;
+        size = s.size;
+        elements = new T[capacity];
+        for (int i = 0; i < size; i++) {
+            elements[i] = s.elements[i];
+        }
+    }
+    return *this;
 }
 
 template<typename T>
