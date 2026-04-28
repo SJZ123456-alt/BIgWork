@@ -28,7 +28,7 @@ public:
 
     int get_size() const;
 
-    T& operator[](int i);
+    T& operator[](int i)const;
 };
 
 
@@ -183,6 +183,6 @@ inline int Seqlist<T>::get_size() const
 }
 
 template<typename T>
-T& Seqlist<T>::operator[](int i) {
+T& Seqlist<T>::operator[](int i) const{
     return elements[i];
 }

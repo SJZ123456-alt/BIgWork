@@ -18,21 +18,21 @@
     <ClCompile Include="FileName.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Linkedlist.h">
-      <Filter>头文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Building.h">
-      <Filter>头文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CampusMap.h">
-      <Filter>头文件</Filter>
-    </ClCompile>
-    <ClCompile Include="AppState.h">
-      <Filter>头文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Seqlist.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AppState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Building.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CampusMap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Linkedlist.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

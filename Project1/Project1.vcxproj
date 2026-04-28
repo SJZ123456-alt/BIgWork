@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AppState.h" />
-    <ClCompile Include="Building.h" />
-    <ClCompile Include="CampusMap.h" />
+    <ClInclude Include="AppState.h" />
+    <ClInclude Include="Building.h" />
+    <ClInclude Include="CampusMap.h" />
     <ClCompile Include="FileName.cpp" />
-    <ClCompile Include="Linkedlist.h" />
+    <ClInclude Include="Linkedlist.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Seqlist.h" />

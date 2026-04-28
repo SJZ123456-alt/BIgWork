@@ -10,7 +10,7 @@ public:
     void selectMap(int index);
 };
 
-void AppState::addMap(std::string name, int l, int w) {
+inline void AppState::addMap(std::string name, int l, int w) {
     CampusMap newMap(name, l, w);
     maps.add(newMap);
 }

@@ -67,17 +67,18 @@ void LinkedList<T>::remove(T e) {
 }
 
 template<class T>
-inline void LinkedList<T>::remove(int index){
-    if (index <= 0 || index > length) {
+inline void LinkedList<T>::remove(int index) {
+    if (index < 0 || index >= length) { 
         return;
     }
-    Node* cur = head->next;
-    for (int i = 0; i < index - 1; i++) {
+    Node* cur = head; 
+    for (int i = 0; i < index; i++) {
         cur = cur->next;
     }
     Node* temp = cur->next;
-    cur = cur->next->next;
+    cur->next = temp->next; 
     delete temp;
+    length--;
 }
 
 template<class T>
