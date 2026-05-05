@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 #include <string>
 #include "Linkedlist.h"
@@ -41,29 +41,30 @@ protected:
 public:
 	CampusMap();
 	CampusMap(std::string name, double L, double W);
-	CampusMap(const CampusMap& other);									//拷贝构造函数
+	CampusMap(const CampusMap& other);											//拷贝构造函数
 
-	double getWidth() const { return W; }								//获取宽度
-	double getLength() const { return L; }								//获取长度
-	int getID() const { return ID; }									//获取当前ID
-	void setID(int id) { ID = id; }										//设置当前ID
-	int getNextID() const { return nextID; }							//获取下一个ID
-	void setNextID(int nid) { nextID = nid; }							//设置下一个ID
-	std::string getName() { return name; }								//获取学校名字
+	double getWidth() const { return W; }										//获取宽度
+	double getLength() const { return L; }										//获取长度
+	int getID() const { return ID; }											//获取当前ID
+	void setID(int id) { ID = id; }												//设置当前ID
+	int getNextID() const { return nextID; }									//获取下一个ID
+	void setNextID(int nid) { nextID = nid; }									//设置下一个ID
+	std::string getName() { return name; }										//获取学校名字
 
-	bool AddBuilding(const Building& b);								//添加建筑
-	bool removeBuildingById(int id);									//按ID删除
-	Building* getBuildingById(int id);									//按ID查找
-	bool updateBuilding(int id, const Building& newB);					//修改建筑
-	void RemoveLast();													//去除builidng中最后一个元素
+	bool AddBuilding(const Building& b);										//添加建筑
+	bool removeBuildingById(int id);											//按ID删除
+	Building* getBuildingById(int id);											//按ID查找
+	bool updateBuilding(int id, const Building& newB);							//修改建筑
+	void RemoveLast();															//去除builidng中最后一个元素
 
-	bool is_not_conflict(const Building& a, const Building& b);			//判断新添加进来的建筑是否与原来的建筑有重合
-	Building* getBuildingAt(double px, double py);						//根据点击/悬停坐标找建筑
+	bool is_not_conflict(const Building& a, const Building& b);					//判断新添加进来的建筑是否与原来的建筑有重合
+	Building* getBuildingAt(double px, double py);								//根据点击/悬停坐标找建筑
+	bool isNameExist(const std::string& checkName, int excludeId = -1) const;	// 检查建筑名字是否已经存在（excludeId 用于修改时排除自身）
 
-	void PrintAll();													//打印building里所有元素			
-	bool operator==(const CampusMap& c)const;							//重定义相等==
+	void PrintAll();															//打印building里所有元素			
+	bool operator==(const CampusMap& c)const;									//重定义相等==
 	
-	inline int getBuildingCount() const { return building.get_size(); } //获取当前地图中有建筑数量
+	inline int getBuildingCount() const { return building.get_size(); }			//获取当前地图中有建筑数量
 	inline const Building& getBuilding(int index) const { return building[index]; }
 };
 
@@ -98,6 +99,7 @@ inline Building& Building:: operator=(const Building& b) {
 	id = b.id;
 	name = b.name;
 	type = b.type;
+	description = b.description;
 	return *this;
 }
 
@@ -137,11 +139,13 @@ inline bool CampusMap::is_not_conflict(const Building& a, const Building& b) {
 
 inline bool CampusMap::AddBuilding(const Building& b) {
 	Building temp = b;
-	if (b.x < 0 || b.y < 0 || b.x + b.length > L || b.y + b.width > W) return false; // 建筑越界
+	if (b.x < 0 || b.y < 0 || b.x + b.length > L || b.y + b.width > W) return false;
 	for (int i = 0; i < building.get_size(); i++) {
-		if (!is_not_conflict(building[i], b)) return false; // 建筑之间发生冲突
+		if (!is_not_conflict(building[i], b)) return false;
 	}
-	if (temp.id == 0) temp.id = nextID++; // 如果没有指定ID，自动分配
+	if (isNameExist(b.name)) return false;
+
+	if (temp.id == 0) temp.id = nextID++;
 	building.push_back(temp);
 	return true;
 }
@@ -164,14 +168,17 @@ inline Building* CampusMap::getBuildingById(int id) {
 }
 
 inline bool CampusMap::updateBuilding(int id, const Building& newB) {
-	if (newB.x < 0 || newB.y < 0 || newB.x + newB.length > L || newB.y + newB.width > W) return false;		// 检查越界
-	for (int i = 0; i < building.get_size(); i++) {									// 检查冲突(排除自身)
+	if (newB.x < 0 || newB.y < 0 || newB.x + newB.length > L || newB.y + newB.width > W) return false;
+	for (int i = 0; i < building.get_size(); i++) {
 		if (building[i].id != id && !is_not_conflict(building[i], newB)) return false;
 	}
+
+	if (isNameExist(newB.name, id)) return false;
+
 	Building* target = getBuildingById(id);
 	if (target) {
 		*target = newB;
-		target->id = id; 
+		target->id = id;
 		return true;
 	}
 	return false;
@@ -184,6 +191,15 @@ inline Building* CampusMap::getBuildingAt(double px, double py) {
 		if (building[i].contains(px, py)) return &building[i];
 	}
 	return nullptr;
+}
+
+inline bool CampusMap::isNameExist(const std::string & checkName, int excludeId) const {
+	for (int i = 0; i < building.get_size(); i++) {
+		if (building[i].name == checkName && building[i].id != excludeId) {
+			return true;
+		}
+	}
+	return false;
 }
 
 inline void CampusMap::PrintAll() {

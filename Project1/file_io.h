@@ -1,11 +1,10 @@
-#pragma once
+﻿#pragma once
 #include <string>
 #include <fstream>
 #include "CampusMap.h"
 
 using namespace std;
 
-// 使用命名空间封装 IO 操作
 namespace FileIO {
 
     // 保存系统到文件。成功返回 true，失败返回 false
@@ -41,22 +40,29 @@ namespace FileIO {
         int mapCount;
         if (!(ifs >> mapCount)) return false;
 
+        string dummy; 
+
         for (int i = 0; i < mapCount; ++i) {
             int id, len, wid, nextId;
             ifs >> id >> len >> wid >> nextId;
-            ifs.ignore();
+            getline(ifs, dummy); 
+
             string name; getline(ifs, name);
 
             CampusMap map(name, len, wid);
             map.setID(id); map.setNextID(nextId);
 
             int bCount; ifs >> bCount;
+            getline(ifs, dummy);
+
             for (int j = 0; j < bCount; ++j) {
                 int bId, bType; double bx, by, blen, bwid;
                 ifs >> bId >> bType >> bx >> by >> blen >> bwid;
-                ifs.ignore();
+                getline(ifs, dummy); 
+
                 string bName, bDesc;
-                getline(ifs, bName); getline(ifs, bDesc);
+                getline(ifs, bName);
+                getline(ifs, bDesc);
                 Building b(bx, by, blen, bwid, bId, bName, bType, bDesc);
                 map.AddBuilding(b);
             }

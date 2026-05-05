@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#pragma warning(disable: 6385)
 
 //------------------------------------------------链表形式的线性表--------------------------------------------//
 template<class T>

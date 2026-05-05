@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <windows.h>
 #include <algorithm>
 #include "CampusMap.h"
@@ -22,10 +22,10 @@ private:
     Building* hoveredBuilding;
     Seqlist<Button> buttons;
 
-    int w2sX(double worldX) const { return (int)((worldX - camX) * zoom + renderer.WIN_W / 2); }
-    int w2sY(double worldY) const { return (int)((worldY - camY) * zoom + renderer.WIN_H / 2); }
-    double s2wX(int screenX) const { return (screenX - renderer.WIN_W / 2) / zoom + camX; }
-    double s2wY(int screenY) const { return (screenY - renderer.WIN_H / 2) / zoom + camY; }
+    int w2sX(double worldX) const { return (int)((worldX - camX) * zoom + renderer.WIN_W / 2.0); }
+    int w2sY(double worldY) const { return (int)((worldY - camY) * zoom + renderer.WIN_H / 2.0); }
+    double s2wX(int screenX) const { return (screenX - renderer.WIN_W / 2.0) / zoom + camX; }
+    double s2wY(int screenY) const { return (screenY - renderer.WIN_H / 2.0) / zoom + camY; }
 
     void showMsg(const wstring& text) const { MessageBoxW(GetHWnd(), text.c_str(), L"系统提示", MB_OK); }
 
@@ -73,15 +73,19 @@ private:
             CampusMap& map = appState.maps[currentMapIndex];
             Building b;
             if (!inputStr(L"建筑名称：", b.name)) return;
+            if (b.name.empty()) { showMsg(L"建筑名称不能为空！"); return; } // 防空
+
             if (!inputInt(L"类型(1教学 2食堂 3图书 4体育 5湖泊)：", b.type)) return;
             int tx, ty, tl, tw;
             if (!inputInt(L"左上角坐标 X：", tx)) return; b.x = tx;
             if (!inputInt(L"左上角坐标 Y：", ty)) return; b.y = ty;
             if (!inputInt(L"长度 L：", tl)) return; b.length = tl;
             if (!inputInt(L"宽度 W：", tw)) return; b.width = tw;
-            inputStr(L"功能描述：", b.description);
 
-            if (!map.AddBuilding(b)) showMsg(L"添加失败！超出了地图边界或与已有建筑发生冲突。");
+            if (!inputStr(L"功能描述：", b.description)) return;
+            if (b.description.empty()) b.description = "暂无详细描述";
+
+            if (!map.AddBuilding(b)) showMsg(L"添加失败！可能原因：\n1. 建筑名称已存在\n2. 建筑重叠冲突\n3. 超出地图边界");
             else showMsg(L"添加成功！");
             break;
         }
@@ -104,16 +108,22 @@ private:
 
                 Building b = *target;
                 inputStr(L"新建筑名称：", b.name);
+                if (b.name.empty()) { showMsg(L"建筑名称不能为空！"); return; } // 防空
+
                 inputInt(L"新类型：", b.type);
                 int tx, ty, tl, tw;
                 if (inputInt(L"新坐标 X：", tx)) b.x = tx;
                 if (inputInt(L"新坐标 Y：", ty)) b.y = ty;
                 if (inputInt(L"新长度 L：", tl)) b.length = tl;
                 if (inputInt(L"新宽度 W：", tw)) b.width = tw;
-                inputStr(L"新描述：", b.description);
 
+                inputStr(L"新描述：", b.description);
+                // 【修复】如果用户什么都不填就回车，给个默认文本
+                if (b.description.empty()) b.description = "暂无详细描述";
+
+                // 【优化】更精确的错误提示
                 if (map.updateBuilding(tid, b)) showMsg(L"修改成功！");
-                else showMsg(L"修改失败：超出地图边界或与其它建筑冲突！");
+                else showMsg(L"修改失败！可能原因：\n1. 新名称已存在\n2. 建筑重叠冲突\n3. 超出地图边界");
             }
             break;
         }
@@ -233,7 +243,7 @@ public:
         camX(0), camY(0), targetCamX(0), targetCamY(0), zoom(1.0), targetZoom(1.0),
         isDragging(false), mouseX(0), mouseY(0), hoveredBuilding(nullptr) {
 
-        const wchar_t* labels[] = { L"创建地图", L"切换地图", L"➕ 添加", L"🗑 删除", L"✏️ 修改", L"💾 保存", L"📂 导入", L"❌ 退出" };
+        const wchar_t* labels[] = { L"创建地图", L"切换地图", L"添加", L"删除", L"修改", L"保存", L"导入", L"退出" };
         int btnCount = 8, btnW = 110, btnH = 46, spacing = 12;
         int totalW = btnCount * btnW + (btnCount - 1) * spacing;
         int startX = (w - totalW) / 2;

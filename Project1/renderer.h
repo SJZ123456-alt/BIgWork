@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <graphics.h>
 #include <string>
 #include "CampusMap.h"
@@ -72,7 +72,7 @@ public:
         drawSmoothRoundedRect(boxX, boxY, boxW, boxH, 15, RGB(255, 255, 255), RGB(150, 150, 160), 3);
         settextcolor(RGB(50, 50, 60));
         settextstyle(24, 0, L"微软雅黑", 0, 0, 700, false, false, false);
-        outtextxy(boxX + 25, boxY + 20, L"📌 请选择要切换的地图：");
+        outtextxy(boxX + 25, boxY + 20, L"请选择要切换的地图：");
 
         for (int i = 0; i < appState.maps.size(); ++i) {
             int itemY = boxY + 70 + i * 55;
