@@ -15,24 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FileName.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Seqlist.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="AppState.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Building.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CampusMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Linkedlist.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="file_io.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
