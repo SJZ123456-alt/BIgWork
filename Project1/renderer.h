@@ -51,6 +51,7 @@ public:
         case 3: return RGB(255, 203, 71);
         case 4: return RGB(83, 212, 142);
         case 5: return RGB(92, 219, 237);
+        case 6: return RGB(156, 136, 255);
         default: return RGB(180, 180, 190);
         }
     }

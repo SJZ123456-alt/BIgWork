@@ -15,7 +15,7 @@ public:
 	double width;
 	int id;
 	std::string name;
-	int type;						// 1教学 2食堂 3图书 4体育 5湖泊
+	int type;						// 1教学 2食堂 3图书 4体育 5湖泊 6宿舍
 	std::string description;
 public:
 	Building();

@@ -75,7 +75,7 @@ private:
             if (!inputStr(L"建筑名称：", b.name)) return;
             if (b.name.empty()) { showMsg(L"建筑名称不能为空！"); return; } // 防空
 
-            if (!inputInt(L"类型(1教学 2食堂 3图书 4体育 5湖泊)：", b.type)) return;
+            if (!inputInt(L"类型(1教学 2食堂 3图书 4体育 5湖泊 6宿舍)：", b.type)) return;
             int tx, ty, tl, tw;
             if (!inputInt(L"左上角坐标 X：", tx)) return; b.x = tx;
             if (!inputInt(L"左上角坐标 Y：", ty)) return; b.y = ty;
@@ -118,10 +118,9 @@ private:
                 if (inputInt(L"新宽度 W：", tw)) b.width = tw;
 
                 inputStr(L"新描述：", b.description);
-                // 【修复】如果用户什么都不填就回车，给个默认文本
+                // 如果用户什么都不填就回车，给个默认文本
                 if (b.description.empty()) b.description = "暂无详细描述";
 
-                // 【优化】更精确的错误提示
                 if (map.updateBuilding(tid, b)) showMsg(L"修改成功！");
                 else showMsg(L"修改失败！可能原因：\n1. 新名称已存在\n2. 建筑重叠冲突\n3. 超出地图边界");
             }
