@@ -199,6 +199,34 @@ Seqlist<T>& Seqlist<T>::operator=(const Seqlist& s) {
     return *this;
 }
 
+/*template<typename T>
+void Seqlist<T>::push_back(const T& e) {
+    if (capacity == size) {
+        if (capacity <= 10000) {
+            int newCapacity = capacity * 2 + 1;
+            T* newElements = new T[newCapacity];
+            for (int i = 0; i < size; i++) {
+                newElements[i] = elements[i];
+            }
+            delete[] elements;
+            elements = newElements;
+            capacity = newCapacity;
+        }
+        else {
+            int newCapacity = size + 1000;
+            T* newElements = new T[newCapacity];
+            for (int i = 0; i < size; i++) {
+                newElements[i] = elements[i];
+            }
+            delete[] elements;
+            elements = newElements;
+            capacity = newCapacity;
+        }
+    }
+    elements[size] = e;
+    size++;
+}*/
+
 template<typename T>
 void Seqlist<T>::push_back(const T& e) {
     if (capacity == size) {
