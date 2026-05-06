@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// --- 字符串转换工具 ---
+// --- 字符串转换工具 --- //
 inline wstring s2ws(const string& str) {
     if (str.empty()) return wstring();
     int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
