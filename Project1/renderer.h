@@ -66,7 +66,6 @@ public:
 
     // 绘制地图列表弹窗
     void drawMapListOverlay(const AppState& appState, int mouseX, int mouseY) const {
-        setfillcolor(RGB(255, 255, 255));
         int boxW = 500, boxH = 460;
         int boxX = (WIN_W - boxW) / 2, boxY = (WIN_H - boxH) / 2 - 30;
 
