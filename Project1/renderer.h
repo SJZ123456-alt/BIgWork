@@ -60,13 +60,12 @@ public:
         setfillcolor(fill);
         setlinecolor(border);
         setlinestyle(PS_SOLID | PS_JOIN_ROUND, thickness);
-        solidroundrect(x, y, x + w, y + h, r, r);
-        roundrect(x, y, x + w, y + h, r, r);
+        solidroundrect(x, y, x + w, y + h, r, r);//实心
+        roundrect(x, y, x + w, y + h, r, r);//框架
     }
 
     // 绘制地图列表弹窗
     void drawMapListOverlay(const AppState& appState, int mouseX, int mouseY) const {
-        setfillcolor(RGB(255, 255, 255));
         int boxW = 500, boxH = 460;
         int boxX = (WIN_W - boxW) / 2, boxY = (WIN_H - boxH) / 2 - 30;
 
@@ -111,9 +110,16 @@ public:
         swprintf(buf, 256, L"占地: %.1f × %.1f", b->length, b->width);
         outtextxy(cx + 15, cy + 65, buf);
 
-        wstring desc = s2ws(b->description);
+        /*wstring desc = s2ws(b->description);
         if (desc.length() > 12) desc = desc.substr(0, 12) + L"...";
-        swprintf(buf, 256, L"描述: %ls", desc.c_str());
-        outtextxy(cx + 15, cy + 85, buf);
+        wstring desc_1 = L"描述: " + desc;
+        outtextxy(cx + 15, cy + 85, desc_1.c_str());*///这里直接显示前12个字，会截断
+
+        outtextxy(cx + 15, cy + 85, L"描述: ");
+        // 定义一个文字可以显示的矩形区域
+        RECT r = { cx + 55, cy + 85, cx + cardW - 15, cy + cardH - 10 };
+        wstring desc = s2ws(b->description);
+        // DT_WORDBREAK 表示遇到边界自动换行
+        drawtext(desc.c_str(), &r, DT_LEFT | DT_WORDBREAK);
     }
 };
