@@ -11,11 +11,11 @@ private:
     AppState appState;
     Renderer renderer;
     int currentMapIndex;//初始化为-1
-    bool isRunning;
-    bool showMapListOverlay;
+    bool isRunning;  
+    bool showMapListOverlay; //判断有没有打开地图列表菜单
 
     double camX, camY, targetCamX, targetCamY, zoom, targetZoom;
-    bool isDragging;
+    bool isDragging;  //右键拖动
     int dragLastX, dragLastY;
     int mouseX, mouseY;
 
@@ -139,7 +139,7 @@ private:
             string path;
             if (inputStr(L"请输入导入路径 (例如 D:\\campus_data.txt)：", path, L"D:\\campus_data.txt")) {
                 if (FileIO::loadFromFile(path, appState)) {
-                    currentMapIndex = appState.maps.size() > 0 ? 0 : -1;
+                    currentMapIndex = appState.maps.size() > 0 ? 0 : -1; //如果有地图的话显示第一个
                     if (currentMapIndex >= 0) {
                         targetCamX = appState.maps[0].getLength() / 2.0; targetCamY = appState.maps[0].getWidth() / 2.0;
                         targetZoom = min((renderer.WIN_W - 200.0) / appState.maps[0].getLength(), (renderer.WIN_H - 200.0) / appState.maps[0].getWidth());
@@ -167,13 +167,13 @@ private:
             bool isHover = (!showMapListOverlay && mouseX >= b.x && mouseX <= b.x + b.w && mouseY >= b.y && mouseY <= b.y + b.h);
             b.hoverProgress += (isHover ? 0.15 : -0.15);
             b.hoverProgress = max(0.0, min(1.0, b.hoverProgress));
-            b.clickScale += (1.0 - b.clickScale) * 0.2;
-            if (isHover) uiHovered = true;
+            //b.clickScale += (1.0 - b.clickScale) * 0.2;    //收敛于1  //由于动画显示有问题故放弃按钮缩放
+            if (isHover) uiHovered = true;  //判断鼠标指着按钮
         }
 
         if (!uiHovered && !isDragging && !showMapListOverlay && currentMapIndex >= 0) {
             double wMouseX = s2wX(mouseX), wMouseY = s2wY(mouseY);
-            hoveredBuilding = appState.maps[currentMapIndex].getBuildingAt(wMouseX, wMouseY);
+            hoveredBuilding = appState.maps[currentMapIndex].getBuildingAt(wMouseX, wMouseY);//建筑高亮
         }
     }
 
@@ -204,7 +204,7 @@ private:
                 int expand = isHovered ? 4 : 0;
                 renderer.drawSmoothRoundedRect(x1 - expand, y1 - expand, bw + expand * 2, bh + expand * 2, 10, drawColor, renderer.blendColor(BLACK, drawColor, 0.2), isHovered ? 3 : 2);
 
-                if (bw > 25 && bh > 15) {
+                if (bw > 25 && bh > 15) {  //够大才能有字
                     wstring displayName = L"[" + to_wstring(p.id) + L"] " + s2ws(p.name);
                     int fontSize = max(10, min(30, (int)(bh / 2.5)));
                     settextstyle(fontSize, 0, L"微软雅黑", 0, 0, isHovered ? 700 : 400, false, false, false);
@@ -216,16 +216,20 @@ private:
         else {
             settextcolor(RGB(180, 180, 190));
             settextstyle(30, 0, L"微软雅黑", 0, 0, 700, false, false, false);
-            outtextxy(renderer.WIN_W / 2 - 250, renderer.WIN_H / 2 - 50, L"地图空空如也，点击下方【创建地图】开始");
+            outtextxy(renderer.WIN_W / 2 - 250, renderer.WIN_H / 2 - 50, L"点一下【创建地图】来开荒吧！(〃'▽'〃)");
         }
 
-        if (hoveredBuilding && !showMapListOverlay) renderer.drawHoverCard(hoveredBuilding, mouseX, mouseY);
+        if (hoveredBuilding && !showMapListOverlay) renderer.drawHoverCard(hoveredBuilding, mouseX, mouseY);  //显示详细信息
 
-        for (int i = 0; i < buttons.get_size(); ++i) {
+        for (int i = 0; i < buttons.get_size(); ++i) {  //绘制按钮
             Button& b = buttons[i];
-            int currW = (int)(b.w * b.clickScale), currH = (int)(b.h * b.clickScale);
-            int currX = b.x + (b.w - currW) / 2, currY = b.y + (b.h - currH) / 2;
-            COLORREF bgColor = renderer.blendColor(RGB(235, 240, 255), RGB(255, 255, 255), b.hoverProgress);
+
+            //int currW = (int)(b.w * b.clickScale), currH = (int)(b.h * b.clickScale);
+            //int currX = b.x + (b.w - currW) / 2, currY = b.y + (b.h - currH) / 2;
+            int currW = b.w, currH = b.h;
+            int currX = b.x, currY = b.y;
+
+            COLORREF bgColor = renderer.blendColor(RGB(235, 240, 255), RGB(255, 255, 255), b.hoverProgress); //前面updateLogic算出的hoverProgress
             COLORREF txtColor = (i == 7) ? RGB(220, 50, 50) : renderer.blendColor(RGB(60, 100, 250), RGB(80, 80, 90), b.hoverProgress);
 
             renderer.drawSmoothRoundedRect(currX, currY, currW, currH, 15, bgColor, RGB(210, 215, 225), 2);
@@ -235,7 +239,7 @@ private:
         }
 
         if (showMapListOverlay) renderer.drawMapListOverlay(appState, mouseX, mouseY);
-        EndBatchDraw();
+        EndBatchDraw(); //一次性展示在屏幕上
     }
 
 public:
