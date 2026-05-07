@@ -309,7 +309,7 @@ public:
 
                 if (!showMapListOverlay) {
                     if (msg.message == WM_MOUSEWHEEL) {
-                        double wX = s2wX(msg.x), wY = s2wY(msg.y);
+                        double wX = s2wX(msg.x), wY = s2wY(msg.y);  //缩放焦点
                         if (msg.wheel > 0) targetZoom *= 1.25; else targetZoom /= 1.25;
                         targetZoom = max(0.1, min(10.0, targetZoom));
                         targetCamX = wX - (msg.x - renderer.WIN_W / 2.0) / targetZoom;
@@ -330,7 +330,7 @@ public:
                         for (int i = 0; i < buttons.get_size(); ++i) {
                             Button& b = buttons[i];
                             if (msg.x >= b.x && msg.x <= b.x + b.w && msg.y >= b.y && msg.y <= b.y + b.h) {
-                                b.clickScale = 0.85; handleBtnClick(b.id);
+                                handleBtnClick(b.id);
                             }
                         }
                     }
@@ -341,7 +341,7 @@ public:
             renderLoop();
 
             DWORD elapsed = GetTickCount() - startTime;
-            if (elapsed < 16) Sleep(16 - elapsed);
+            if (elapsed < 16) Sleep(16 - elapsed); //控制60帧
         }
         closegraph();
     }
