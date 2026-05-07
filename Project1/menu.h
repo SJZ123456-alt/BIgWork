@@ -86,6 +86,10 @@ private:
             if (!inputInt(L"左上角坐标 Y：", ty)) return; b.y = ty;
             if (!inputInt(L"长度 L：", tl)) return; b.length = tl;
             if (!inputInt(L"宽度 W：", tw)) return; b.width = tw;
+            if (tl <= 0 || tw <= 0) {
+                    showMsg(L"哎呀，这个建筑小到连细菌都住不进去啦...(｡•́︿•̀｡)");
+                    return;
+                }
 
             if (!inputStr(L"功能描述：", b.description)) return;
             if (b.description.empty()) b.description = "这个楼很懒，什么也没留下(￣o￣) . z Z";
@@ -123,6 +127,11 @@ private:
                 if (inputInt(L"新坐标 Y：", ty, b.y)) b.y = ty;
                 if (inputInt(L"新长度 L：", tl, b.length)) b.length = tl;
                 if (inputInt(L"新宽度 W：", tw, b.width)) b.width = tw;
+                
+                if (b.length <= 0 || b.width <= 0) {
+                    showMsg(L"怎么把这栋楼给降维了？长宽必须大于 0 orz");
+                    return;
+                }
 
                 inputStr(L"新描述：", b.description, s2ws(b.description).c_str());
                 if (b.description.empty()) b.description = "这个楼很懒，什么也没留下(￣o￣) . z Z";
