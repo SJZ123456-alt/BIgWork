@@ -22,7 +22,7 @@ public:
 	Building(double x, double y, double l, double w, int id, std::string name, int type, std::string desc);
 
 	Building& operator=(const Building& b);										//重定义赋值=
-	bool operator==(const Building& b)const;									//重定义赋值==
+	bool operator==(const Building& b)const;									//重定义相等==
 	bool contains(double px, double py)const;									//判断鼠标是否在建筑内部
 	friend std::ostream& operator<<(std::ostream& cout, const Building& b);		//重定义输出<<
 };

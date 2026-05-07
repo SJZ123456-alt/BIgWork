@@ -144,7 +144,7 @@ int LinkedList<T>::size() const {
 
 template<class T>
 T& LinkedList<T>::operator[](int index) const {
-    if (index > length || index < 0) {
+    if (index >= length || index < 0) {
         throw std::out_of_range("您输入的节点不存在，请重新输入！\n");
     }
     Node* cur = head->next;
@@ -198,34 +198,6 @@ Seqlist<T>& Seqlist<T>::operator=(const Seqlist& s) {
     }
     return *this;
 }
-
-/*template<typename T>
-void Seqlist<T>::push_back(const T& e) {
-    if (capacity == size) {
-        if (capacity <= 10000) {
-            int newCapacity = capacity * 2 + 1;
-            T* newElements = new T[newCapacity];
-            for (int i = 0; i < size; i++) {
-                newElements[i] = elements[i];
-            }
-            delete[] elements;
-            elements = newElements;
-            capacity = newCapacity;
-        }
-        else {
-            int newCapacity = size + 1000;
-            T* newElements = new T[newCapacity];
-            for (int i = 0; i < size; i++) {
-                newElements[i] = elements[i];
-            }
-            delete[] elements;
-            elements = newElements;
-            capacity = newCapacity;
-        }
-    }
-    elements[size] = e;
-    size++;
-}*/
 
 template<typename T>
 void Seqlist<T>::push_back(const T& e) {
