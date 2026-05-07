@@ -38,9 +38,9 @@ private:
         return false;
     }
 
-    bool inputInt(const wchar_t* prompt, int& value) const {
+    bool inputInt(const wchar_t* prompt, int& value, int def = 0) const {
         string str;
-        if (inputStr(prompt, str)) {
+        if (inputStr(prompt, str, to_wstring(def).c_str())) {
             try { value = stoi(str); return true; }
             catch (...) { showMsg(L"请输入有效的整数！"); }
         }
@@ -107,22 +107,23 @@ private:
                 if (!target) { showMsg(L"未找到该编号！"); return; }
 
                 Building b = *target;
-                inputStr(L"新建筑名称：", b.name);
-                if (b.name.empty()) { showMsg(L"建筑名称不能为空！"); return; } // 防空
+                wstring defName = s2ws(b.name);                 // 原名称转宽字符
+                inputStr(L"新建筑名称：", b.name, defName.c_str());
+                if (b.name.empty()) { showMsg(L"建筑名称不能为空呦๐•ᴗ•๐"); return; } // 防空
 
-                inputInt(L"新类型：", b.type);
+                if (!inputInt(L"新类型(1教学 2食堂 3图书 4体育 5湖泊 6宿舍 或其他数字)：", b.type, b.type)) return;
+
                 int tx, ty, tl, tw;
-                if (inputInt(L"新坐标 X：", tx)) b.x = tx;
-                if (inputInt(L"新坐标 Y：", ty)) b.y = ty;
-                if (inputInt(L"新长度 L：", tl)) b.length = tl;
-                if (inputInt(L"新宽度 W：", tw)) b.width = tw;
+                if (inputInt(L"新坐标 X：", tx, b.x)) b.x = tx;
+                if (inputInt(L"新坐标 Y：", ty, b.y)) b.y = ty;
+                if (inputInt(L"新长度 L：", tl, b.length)) b.length = tl;
+                if (inputInt(L"新宽度 W：", tw, b.width)) b.width = tw;
 
-                inputStr(L"新描述：", b.description);
-                // 如果用户什么都不填就回车，给个默认文本
-                if (b.description.empty()) b.description = "暂无详细描述";
+                inputStr(L"新描述：", b.description, s2ws(b.description).c_str());
+                if (b.description.empty()) b.description = "这个楼很懒，什么也没留下(￣o￣) . z Z";
 
-                if (map.updateBuilding(tid, b)) showMsg(L"修改成功！");
-                else showMsg(L"修改失败！可能原因：\n1. 新名称已存在\n2. 建筑重叠冲突\n3. 超出地图边界");
+                if (map.updateBuilding(tid, b)) showMsg(L"修改成功！ヾ(*´∀ ˋ*)ﾉ");
+                else showMsg(L"修改失败！(╥﹏╥)  可能原因：\n1. 新名称已存在\n2. 建筑重叠冲突\n3. 超出地图边界");
             }
             break;
         }
