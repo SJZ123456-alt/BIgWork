@@ -52,7 +52,12 @@ private:
         case 0: { // 1. 创建地图
             string name; int l, w;
             if (!inputStr(L"请输入校园名称：", name)) return;
+            if (name.empty()) { showMsg(L"校园不能没有名字，就像西方不能失去耶路撒冷( ˘•ω•˘ )"); return; } // 防空
             if (!inputInt(L"地图实际长度 L：", l) || !inputInt(L"地图实际宽度 W：", w)) return;
+            if (l <= 0 || w <= 0) {
+                showMsg(L"请给校园一点生存空间吧~(￣▽￣)");
+                return;
+            }
 
             CampusMap map(name, l, w);
             map.setID(appState.maps.size() + 1);
@@ -275,7 +280,7 @@ public:
                     int boxX = (renderer.WIN_W - boxW) / 2, boxY = (renderer.WIN_H - boxH) / 2 - 30;
                     if (msg.x > boxX + boxW - 45 && msg.x < boxX + boxW - 15 && msg.y > boxY + 15 && msg.y < boxY + 45) {
                         showMapListOverlay = false; continue;
-                    }
+                    }//地图列表的叉号
                     for (int i = 0; i < appState.maps.size(); ++i) {
                         int itemY = boxY + 70 + i * 55;
                         if (msg.x > boxX + 20 && msg.x < boxX + boxW - 20 && msg.y > itemY && msg.y < itemY + 45) {
