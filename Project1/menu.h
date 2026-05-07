@@ -233,7 +233,7 @@ private:
             COLORREF txtColor = (i == 7) ? RGB(220, 50, 50) : renderer.blendColor(RGB(60, 100, 250), RGB(80, 80, 90), b.hoverProgress);
 
             renderer.drawSmoothRoundedRect(currX, currY, currW, currH, 15, bgColor, RGB(210, 215, 225), 2);
-            settextstyle((int)(16 * b.clickScale), 0, L"微软雅黑", 0, 0, 700, false, false, false);
+            settextstyle((int)16, 0, L"微软雅黑", 0, 0, 700, false, false, false);
             settextcolor(txtColor);
             outtextxy(currX + (currW - textwidth(b.text.c_str())) / 2, currY + (currH - textheight(b.text.c_str())) / 2, b.text.c_str());
         }
@@ -249,8 +249,10 @@ public:
 
         const wchar_t* labels[] = { L"创建地图", L"切换地图", L"添加", L"删除", L"修改", L"保存", L"导入", L"退出" };
         int btnCount = 8, btnW = 110, btnH = 46, spacing = 12;
+
         int totalW = btnCount * btnW + (btnCount - 1) * spacing;
         int startX = (w - totalW) / 2;
+        //使按钮们居中
         for (int i = 0; i < btnCount; ++i) {
             Button b = { i, startX + i * (btnW + spacing), h - 70, btnW, btnH, labels[i], 0.0, 1.0 };
             buttons.push_back(b);
@@ -259,7 +261,7 @@ public:
 
     void run() {
         initgraph(renderer.WIN_W, renderer.WIN_H);
-        setbkmode(TRANSPARENT);
+        setbkmode(TRANSPARENT);  //文字背景透明
 
         ExMessage msg;
         while (isRunning) {
@@ -268,7 +270,7 @@ public:
             while (peekmessage(&msg, EM_MOUSE | EM_KEY)) {
                 mouseX = msg.x; mouseY = msg.y;
 
-                if (showMapListOverlay && msg.message == WM_LBUTTONDOWN) {
+                if (showMapListOverlay && msg.message == WM_LBUTTONDOWN) {  //左键按下
                     int boxW = 500, boxH = 460;
                     int boxX = (renderer.WIN_W - boxW) / 2, boxY = (renderer.WIN_H - boxH) / 2 - 30;
                     if (msg.x > boxX + boxW - 45 && msg.x < boxX + boxW - 15 && msg.y > boxY + 15 && msg.y < boxY + 45) {
