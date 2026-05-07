@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// --- 字符串转换工具 ---
+// --- 字符串转换工具 --- //
 inline wstring s2ws(const string& str) {
     if (str.empty()) return wstring();
     int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
@@ -113,7 +113,7 @@ public:
         /*wstring desc = s2ws(b->description);
         if (desc.length() > 12) desc = desc.substr(0, 12) + L"...";
         wstring desc_1 = L"描述: " + desc;
-		outtextxy(cx + 15, cy + 85, desc_1.c_str());*///这里直接显示前12个字，会截断
+        outtextxy(cx + 15, cy + 85, desc_1.c_str());*///这里直接显示前12个字，会截断
 
         outtextxy(cx + 15, cy + 85, L"描述: ");
         // 定义一个文字可以显示的矩形区域

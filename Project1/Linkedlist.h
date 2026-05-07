@@ -26,7 +26,7 @@ public:
     void remove(int index);             //去除序列号为index的元素
     void clear();                       //全部清除，剩下一个头结点
     void display() const;               //把链表中所有元素输出一遍
-    int size() const;                   //获取链表大小
+    int  size() const;                  //获取链表大小
 
     T& operator[](int index)const;      //用索引获取元素
 };
@@ -202,14 +202,26 @@ Seqlist<T>& Seqlist<T>::operator=(const Seqlist& s) {
 /*template<typename T>
 void Seqlist<T>::push_back(const T& e) {
     if (capacity == size) {
-        int newCapacity = capacity * 2 + 1;
-        T* newElements = new T[newCapacity];
-        for (int i = 0; i < size; i++) {
-            newElements[i] = elements[i];
+        if (capacity <= 10000) {
+            int newCapacity = capacity * 2 + 1;
+            T* newElements = new T[newCapacity];
+            for (int i = 0; i < size; i++) {
+                newElements[i] = elements[i];
+            }
+            delete[] elements;
+            elements = newElements;
+            capacity = newCapacity;
         }
-        delete[] elements;
-        elements = newElements;
-        capacity = newCapacity;
+        else {
+            int newCapacity = size + 1000;
+            T* newElements = new T[newCapacity];
+            for (int i = 0; i < size; i++) {
+                newElements[i] = elements[i];
+            }
+            delete[] elements;
+            elements = newElements;
+            capacity = newCapacity;
+        }
     }
     elements[size] = e;
     size++;
