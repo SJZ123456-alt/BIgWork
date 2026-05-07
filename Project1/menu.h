@@ -10,7 +10,7 @@ class MenuController {
 private:
     AppState appState;
     Renderer renderer;
-    int currentMapIndex;
+    int currentMapIndex;//初始化为-1
     bool isRunning;
     bool showMapListOverlay;
 
@@ -57,25 +57,25 @@ private:
             CampusMap map(name, l, w);
             map.setID(appState.maps.size() + 1);
             appState.maps.add(map);
-            currentMapIndex = appState.maps.size() - 1;
+            currentMapIndex = appState.maps.size() - 1;//创建完地图后，画面立刻切换到这个新地图上
             targetCamX = l / 2.0; targetCamY = w / 2.0;
-            targetZoom = min((renderer.WIN_W - 200.0) / l, (renderer.WIN_H - 200.0) / w);
+            targetZoom = min((renderer.WIN_W - 200.0) / l, (renderer.WIN_H - 200.0) / w);//留点边距
             showMsg(L"创建成功！");
             break;
         }
         case 1: { // 切换地图
-            if (appState.maps.size() == 0) showMsg(L"当前还没有地图数据！");
+            if (appState.maps.size() == 0) showMsg(L"先创建一个地图再点我试试吧(◕ᴗ◕✿)");
             else showMapListOverlay = true;
             break;
         }
         case 2: { // 2. 增加建筑
-            if (currentMapIndex < 0) { showMsg(L"请先创建或选择地图！"); return; }
+            if (currentMapIndex < 0) { showMsg(L"先创建一个地图再点我试试吧(◕ᴗ◕✿)"); return; }
             CampusMap& map = appState.maps[currentMapIndex];
             Building b;
             if (!inputStr(L"建筑名称：", b.name)) return;
-            if (b.name.empty()) { showMsg(L"建筑名称不能为空！"); return; } // 防空
+            if (b.name.empty()) { showMsg(L"建筑名称不能为空呦๐•ᴗ•๐"); return; } // 防空
 
-            if (!inputInt(L"类型(1教学 2食堂 3图书 4体育 5湖泊 6宿舍)：", b.type)) return;
+            if (!inputInt(L"类型(1教学 2食堂 3图书 4体育 5湖泊 6宿舍 或其他数字)：", b.type)) return;
             int tx, ty, tl, tw;
             if (!inputInt(L"左上角坐标 X：", tx)) return; b.x = tx;
             if (!inputInt(L"左上角坐标 Y：", ty)) return; b.y = ty;
@@ -83,14 +83,14 @@ private:
             if (!inputInt(L"宽度 W：", tw)) return; b.width = tw;
 
             if (!inputStr(L"功能描述：", b.description)) return;
-            if (b.description.empty()) b.description = "暂无详细描述";
+            if (b.description.empty()) b.description = "这个楼很懒，什么也没留下(￣o￣) . z Z";
 
-            if (!map.AddBuilding(b)) showMsg(L"添加失败！可能原因：\n1. 建筑名称已存在\n2. 建筑重叠冲突\n3. 超出地图边界");
-            else showMsg(L"添加成功！");
+            if (!map.AddBuilding(b)) showMsg(L"添加失败！(T▽T)  可能原因：\n1. 建筑名称已存在\n2. 建筑重叠冲突\n3. 超出地图边界");
+            else showMsg(L"添加成功！(≧▽≦)");
             break;
         }
         case 3: { // 4. 删除建筑
-            if (currentMapIndex < 0) return;
+            if (currentMapIndex < 0) { showMsg(L"先创建一个地图再点我试试吧(◕ᴗ◕✿)"); return; }
             int tid;
             if (inputInt(L"请输入要删除的【建筑编号(ID)】：", tid)) {
                 if (appState.maps[currentMapIndex].removeBuildingById(tid)) showMsg(L"删除成功！");
@@ -99,7 +99,7 @@ private:
             break;
         }
         case 4: { // 5. 修改建筑
-            if (currentMapIndex < 0) return;
+            if (currentMapIndex < 0) { showMsg(L"先创建一个地图再点我试试吧(◕ᴗ◕✿)"); return; }
             int tid;
             if (inputInt(L"请输入建筑编号(ID)以修改：", tid)) {
                 CampusMap& map = appState.maps[currentMapIndex];
