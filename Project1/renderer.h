@@ -70,6 +70,16 @@ public:
         int boxX = (WIN_W - boxW) / 2, boxY = (WIN_H - boxH) / 2 - 30;
 
         drawSmoothRoundedRect(boxX, boxY, boxW, boxH, 15, RGB(255, 255, 255), RGB(150, 150, 160), 3);
+
+        //画叉号
+        int closeX = boxX + boxW - 30;
+        int closeY = boxY + 30;
+        int size = 8; // 大小
+        setlinecolor(RGB(200, 200, 210));
+        setlinestyle(PS_SOLID, 2);
+        line(closeX - size, closeY - size, closeX + size, closeY + size);
+        line(closeX + size, closeY - size, closeX - size, closeY + size);
+
         settextcolor(RGB(50, 50, 60));
         settextstyle(24, 0, L"微软雅黑", 0, 0, 700, false, false, false);
         outtextxy(boxX + 25, boxY + 20, L"请选择要切换的地图：");

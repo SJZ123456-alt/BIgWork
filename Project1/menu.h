@@ -10,12 +10,12 @@ class MenuController {
 private:
     AppState appState;
     Renderer renderer;
-    int currentMapIndex;
-    bool isRunning;
-    bool showMapListOverlay;
+    int currentMapIndex;//初始化为-1
+    bool isRunning;  
+    bool showMapListOverlay; //判断有没有打开地图列表菜单
 
     double camX, camY, targetCamX, targetCamY, zoom, targetZoom;
-    bool isDragging;
+    bool isDragging;  //右键拖动
     int dragLastX, dragLastY;
     int mouseX, mouseY;
 
@@ -38,9 +38,9 @@ private:
         return false;
     }
 
-    bool inputInt(const wchar_t* prompt, int& value) const {
+    bool inputInt(const wchar_t* prompt, int& value, int def = 0) const {
         string str;
-        if (inputStr(prompt, str)) {
+        if (inputStr(prompt, str, to_wstring(def).c_str())) {
             try { value = stoi(str); return true; }
             catch (...) { showMsg(L"请输入有效的整数！"); }
         }
@@ -50,47 +50,61 @@ private:
     void handleBtnClick(int id) {
         switch (id) {
         case 0: { // 1. 创建地图
+            if (appState.maps.size() >= 7) { //地图列表展示有限
+                showMsg(L"eee,当前地图有点多，塞不下了(っ °Д °;)っ\n先导出或者删除一些旧地图吧！");
+                return;
+            }
+
             string name; int l, w;
             if (!inputStr(L"请输入校园名称：", name)) return;
+            if (name.empty()) { showMsg(L"校园不能没有名字，就像西方不能失去耶路撒冷( ˘•ω•˘ )"); return; } // 防空
             if (!inputInt(L"地图实际长度 L：", l) || !inputInt(L"地图实际宽度 W：", w)) return;
+            if (l <= 0 || w <= 0) {
+                showMsg(L"请给校园一点生存空间吧~(￣▽￣)");
+                return;
+            }
 
             CampusMap map(name, l, w);
             map.setID(appState.maps.size() + 1);
             appState.maps.add(map);
-            currentMapIndex = appState.maps.size() - 1;
+            currentMapIndex = appState.maps.size() - 1;//创建完地图后，画面立刻切换到这个新地图上
             targetCamX = l / 2.0; targetCamY = w / 2.0;
-            targetZoom = min((renderer.WIN_W - 200.0) / l, (renderer.WIN_H - 200.0) / w);
+            targetZoom = min((renderer.WIN_W - 200.0) / l, (renderer.WIN_H - 200.0) / w);//留点边距
             showMsg(L"创建成功！");
             break;
         }
         case 1: { // 切换地图
-            if (appState.maps.size() == 0) showMsg(L"当前还没有地图数据！");
+            if (appState.maps.size() == 0) showMsg(L"先创建一个地图再点我试试吧(◕ᴗ◕✿)");
             else showMapListOverlay = true;
             break;
         }
         case 2: { // 2. 增加建筑
-            if (currentMapIndex < 0) { showMsg(L"请先创建或选择地图！"); return; }
+            if (currentMapIndex < 0) { showMsg(L"先创建一个地图再点我试试吧(◕ᴗ◕✿)"); return; }
             CampusMap& map = appState.maps[currentMapIndex];
             Building b;
             if (!inputStr(L"建筑名称：", b.name)) return;
-            if (b.name.empty()) { showMsg(L"建筑名称不能为空！"); return; } // 防空
+            if (b.name.empty()) { showMsg(L"建筑名称不能为空呦๐•ᴗ•๐"); return; } // 防空
 
-            if (!inputInt(L"类型(1教学 2食堂 3图书 4体育 5湖泊 6宿舍)：", b.type)) return;
+            if (!inputInt(L"类型(1教学 2食堂 3图书 4体育 5湖泊 6宿舍 或其他数字)：", b.type)) return;
             int tx, ty, tl, tw;
             if (!inputInt(L"左上角坐标 X：", tx)) return; b.x = tx;
             if (!inputInt(L"左上角坐标 Y：", ty)) return; b.y = ty;
             if (!inputInt(L"长度 L：", tl)) return; b.length = tl;
             if (!inputInt(L"宽度 W：", tw)) return; b.width = tw;
+            if (tl <= 0 || tw <= 0) {
+                    showMsg(L"哎呀，这个建筑小到连细菌都住不进去啦...(｡•́︿•̀｡)");
+                    return;
+                }
 
             if (!inputStr(L"功能描述：", b.description)) return;
-            if (b.description.empty()) b.description = "暂无详细描述";
+            if (b.description.empty()) b.description = "这个楼很懒，什么也没留下(￣o￣) . z Z";
 
-            if (!map.AddBuilding(b)) showMsg(L"添加失败！可能原因：\n1. 建筑名称已存在\n2. 建筑重叠冲突\n3. 超出地图边界");
-            else showMsg(L"添加成功！");
+            if (!map.AddBuilding(b)) showMsg(L"添加失败！(T▽T)  可能原因：\n1. 建筑名称已存在\n2. 建筑重叠冲突\n3. 超出地图边界");
+            else showMsg(L"添加成功！(≧▽≦)");
             break;
         }
         case 3: { // 4. 删除建筑
-            if (currentMapIndex < 0) return;
+            if (currentMapIndex < 0) { showMsg(L"先创建一个地图再点我试试吧(◕ᴗ◕✿)"); return; }
             int tid;
             if (inputInt(L"请输入要删除的【建筑编号(ID)】：", tid)) {
                 if (appState.maps[currentMapIndex].removeBuildingById(tid)) showMsg(L"删除成功！");
@@ -99,7 +113,7 @@ private:
             break;
         }
         case 4: { // 5. 修改建筑
-            if (currentMapIndex < 0) return;
+            if (currentMapIndex < 0) { showMsg(L"先创建一个地图再点我试试吧(◕ᴗ◕✿)"); return; }
             int tid;
             if (inputInt(L"请输入建筑编号(ID)以修改：", tid)) {
                 CampusMap& map = appState.maps[currentMapIndex];
@@ -107,22 +121,28 @@ private:
                 if (!target) { showMsg(L"未找到该编号！"); return; }
 
                 Building b = *target;
-                inputStr(L"新建筑名称：", b.name);
-                if (b.name.empty()) { showMsg(L"建筑名称不能为空！"); return; } // 防空
+                wstring defName = s2ws(b.name);                 // 原名称转宽字符
+                inputStr(L"新建筑名称：", b.name, defName.c_str());
+                if (b.name.empty()) { showMsg(L"建筑名称不能为空呦๐•ᴗ•๐"); return; } // 防空
 
-                inputInt(L"新类型：", b.type);
+                if (!inputInt(L"新类型(1教学 2食堂 3图书 4体育 5湖泊 6宿舍 或其他数字)：", b.type, b.type)) return;
+
                 int tx, ty, tl, tw;
-                if (inputInt(L"新坐标 X：", tx)) b.x = tx;
-                if (inputInt(L"新坐标 Y：", ty)) b.y = ty;
-                if (inputInt(L"新长度 L：", tl)) b.length = tl;
-                if (inputInt(L"新宽度 W：", tw)) b.width = tw;
+                if (inputInt(L"新坐标 X：", tx, b.x)) b.x = tx;
+                if (inputInt(L"新坐标 Y：", ty, b.y)) b.y = ty;
+                if (inputInt(L"新长度 L：", tl, b.length)) b.length = tl;
+                if (inputInt(L"新宽度 W：", tw, b.width)) b.width = tw;
+                
+                if (b.length <= 0 || b.width <= 0) {
+                    showMsg(L"怎么把这栋楼给降维了？长宽必须大于 0 orz");
+                    return;
+                }
 
-                inputStr(L"新描述：", b.description);
-                // 如果用户什么都不填就回车，给个默认文本
-                if (b.description.empty()) b.description = "暂无详细描述";
+                inputStr(L"新描述：", b.description, s2ws(b.description).c_str());
+                if (b.description.empty()) b.description = "这个楼很懒，什么也没留下(￣o￣) . z Z";
 
-                if (map.updateBuilding(tid, b)) showMsg(L"修改成功！");
-                else showMsg(L"修改失败！可能原因：\n1. 新名称已存在\n2. 建筑重叠冲突\n3. 超出地图边界");
+                if (map.updateBuilding(tid, b)) showMsg(L"修改成功！ヾ(*´∀ ˋ*)ﾉ");
+                else showMsg(L"修改失败！(╥﹏╥)  可能原因：\n1. 新名称已存在\n2. 建筑重叠冲突\n3. 超出地图边界");
             }
             break;
         }
@@ -138,7 +158,7 @@ private:
             string path;
             if (inputStr(L"请输入导入路径 (例如 D:\\campus_data.txt)：", path, L"D:\\campus_data.txt")) {
                 if (FileIO::loadFromFile(path, appState)) {
-                    currentMapIndex = appState.maps.size() > 0 ? 0 : -1;
+                    currentMapIndex = appState.maps.size() > 0 ? 0 : -1; //如果有地图的话显示第一个
                     if (currentMapIndex >= 0) {
                         targetCamX = appState.maps[0].getLength() / 2.0; targetCamY = appState.maps[0].getWidth() / 2.0;
                         targetZoom = min((renderer.WIN_W - 200.0) / appState.maps[0].getLength(), (renderer.WIN_H - 200.0) / appState.maps[0].getWidth());
@@ -166,13 +186,13 @@ private:
             bool isHover = (!showMapListOverlay && mouseX >= b.x && mouseX <= b.x + b.w && mouseY >= b.y && mouseY <= b.y + b.h);
             b.hoverProgress += (isHover ? 0.15 : -0.15);
             b.hoverProgress = max(0.0, min(1.0, b.hoverProgress));
-            b.clickScale += (1.0 - b.clickScale) * 0.2;
-            if (isHover) uiHovered = true;
+            //b.clickScale += (1.0 - b.clickScale) * 0.2;    //收敛于1  //由于动画显示有问题故放弃按钮缩放
+            if (isHover) uiHovered = true;  //判断鼠标指着按钮
         }
 
         if (!uiHovered && !isDragging && !showMapListOverlay && currentMapIndex >= 0) {
             double wMouseX = s2wX(mouseX), wMouseY = s2wY(mouseY);
-            hoveredBuilding = appState.maps[currentMapIndex].getBuildingAt(wMouseX, wMouseY);
+            hoveredBuilding = appState.maps[currentMapIndex].getBuildingAt(wMouseX, wMouseY);//建筑高亮
         }
     }
 
@@ -203,7 +223,7 @@ private:
                 int expand = isHovered ? 4 : 0;
                 renderer.drawSmoothRoundedRect(x1 - expand, y1 - expand, bw + expand * 2, bh + expand * 2, 10, drawColor, renderer.blendColor(BLACK, drawColor, 0.2), isHovered ? 3 : 2);
 
-                if (bw > 25 && bh > 15) {
+                if (bw > 25 && bh > 15) {  //够大才能有字
                     wstring displayName = L"[" + to_wstring(p.id) + L"] " + s2ws(p.name);
                     int fontSize = max(10, min(30, (int)(bh / 2.5)));
                     settextstyle(fontSize, 0, L"微软雅黑", 0, 0, isHovered ? 700 : 400, false, false, false);
@@ -215,26 +235,30 @@ private:
         else {
             settextcolor(RGB(180, 180, 190));
             settextstyle(30, 0, L"微软雅黑", 0, 0, 700, false, false, false);
-            outtextxy(renderer.WIN_W / 2 - 250, renderer.WIN_H / 2 - 50, L"地图空空如也，点击下方【创建地图】开始");
+            outtextxy(renderer.WIN_W / 2 - 250, renderer.WIN_H / 2 - 50, L"点一下【创建地图】来开荒吧！(〃'▽'〃)");
         }
 
-        if (hoveredBuilding && !showMapListOverlay) renderer.drawHoverCard(hoveredBuilding, mouseX, mouseY);
+        if (hoveredBuilding && !showMapListOverlay) renderer.drawHoverCard(hoveredBuilding, mouseX, mouseY);  //显示详细信息
 
-        for (int i = 0; i < buttons.get_size(); ++i) {
+        for (int i = 0; i < buttons.get_size(); ++i) {  //绘制按钮
             Button& b = buttons[i];
-            int currW = (int)(b.w * b.clickScale), currH = (int)(b.h * b.clickScale);
-            int currX = b.x + (b.w - currW) / 2, currY = b.y + (b.h - currH) / 2;
-            COLORREF bgColor = renderer.blendColor(RGB(235, 240, 255), RGB(255, 255, 255), b.hoverProgress);
+
+            //int currW = (int)(b.w * b.clickScale), currH = (int)(b.h * b.clickScale);
+            //int currX = b.x + (b.w - currW) / 2, currY = b.y + (b.h - currH) / 2;
+            int currW = b.w, currH = b.h;
+            int currX = b.x, currY = b.y;
+
+            COLORREF bgColor = renderer.blendColor(RGB(235, 240, 255), RGB(255, 255, 255), b.hoverProgress); //前面updateLogic算出的hoverProgress
             COLORREF txtColor = (i == 7) ? RGB(220, 50, 50) : renderer.blendColor(RGB(60, 100, 250), RGB(80, 80, 90), b.hoverProgress);
 
             renderer.drawSmoothRoundedRect(currX, currY, currW, currH, 15, bgColor, RGB(210, 215, 225), 2);
-            settextstyle((int)(16 * b.clickScale), 0, L"微软雅黑", 0, 0, 700, false, false, false);
+            settextstyle((int)16, 0, L"微软雅黑", 0, 0, 700, false, false, false);
             settextcolor(txtColor);
             outtextxy(currX + (currW - textwidth(b.text.c_str())) / 2, currY + (currH - textheight(b.text.c_str())) / 2, b.text.c_str());
         }
 
         if (showMapListOverlay) renderer.drawMapListOverlay(appState, mouseX, mouseY);
-        EndBatchDraw();
+        EndBatchDraw(); //一次性展示在屏幕上
     }
 
 public:
@@ -244,8 +268,10 @@ public:
 
         const wchar_t* labels[] = { L"创建地图", L"切换地图", L"添加", L"删除", L"修改", L"保存", L"导入", L"退出" };
         int btnCount = 8, btnW = 110, btnH = 46, spacing = 12;
+
         int totalW = btnCount * btnW + (btnCount - 1) * spacing;
         int startX = (w - totalW) / 2;
+        //使按钮们居中
         for (int i = 0; i < btnCount; ++i) {
             Button b = { i, startX + i * (btnW + spacing), h - 70, btnW, btnH, labels[i], 0.0, 1.0 };
             buttons.push_back(b);
@@ -254,7 +280,7 @@ public:
 
     void run() {
         initgraph(renderer.WIN_W, renderer.WIN_H);
-        setbkmode(TRANSPARENT);
+        setbkmode(TRANSPARENT);  //文字背景透明
 
         ExMessage msg;
         while (isRunning) {
@@ -263,12 +289,12 @@ public:
             while (peekmessage(&msg, EM_MOUSE | EM_KEY)) {
                 mouseX = msg.x; mouseY = msg.y;
 
-                if (showMapListOverlay && msg.message == WM_LBUTTONDOWN) {
+                if (showMapListOverlay && msg.message == WM_LBUTTONDOWN) {  //左键按下
                     int boxW = 500, boxH = 460;
                     int boxX = (renderer.WIN_W - boxW) / 2, boxY = (renderer.WIN_H - boxH) / 2 - 30;
                     if (msg.x > boxX + boxW - 45 && msg.x < boxX + boxW - 15 && msg.y > boxY + 15 && msg.y < boxY + 45) {
                         showMapListOverlay = false; continue;
-                    }
+                    }//地图列表的叉号
                     for (int i = 0; i < appState.maps.size(); ++i) {
                         int itemY = boxY + 70 + i * 55;
                         if (msg.x > boxX + 20 && msg.x < boxX + boxW - 20 && msg.y > itemY && msg.y < itemY + 45) {
@@ -283,7 +309,7 @@ public:
 
                 if (!showMapListOverlay) {
                     if (msg.message == WM_MOUSEWHEEL) {
-                        double wX = s2wX(msg.x), wY = s2wY(msg.y);
+                        double wX = s2wX(msg.x), wY = s2wY(msg.y);  //缩放焦点
                         if (msg.wheel > 0) targetZoom *= 1.25; else targetZoom /= 1.25;
                         targetZoom = max(0.1, min(10.0, targetZoom));
                         targetCamX = wX - (msg.x - renderer.WIN_W / 2.0) / targetZoom;
@@ -304,7 +330,7 @@ public:
                         for (int i = 0; i < buttons.get_size(); ++i) {
                             Button& b = buttons[i];
                             if (msg.x >= b.x && msg.x <= b.x + b.w && msg.y >= b.y && msg.y <= b.y + b.h) {
-                                b.clickScale = 0.85; handleBtnClick(b.id);
+                                handleBtnClick(b.id);
                             }
                         }
                     }
@@ -315,7 +341,7 @@ public:
             renderLoop();
 
             DWORD elapsed = GetTickCount() - startTime;
-            if (elapsed < 16) Sleep(16 - elapsed);
+            if (elapsed < 16) Sleep(16 - elapsed); //控制60帧
         }
         closegraph();
     }
