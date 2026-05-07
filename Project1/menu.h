@@ -50,6 +50,11 @@ private:
     void handleBtnClick(int id) {
         switch (id) {
         case 0: { // 1. 创建地图
+            if (appState.maps.size() >= 7) { //地图列表展示有限
+                showMsg(L"eee,当前地图有点多，塞不下了(っ °Д °;)っ\n先导出或者删除一些旧地图吧！");
+                return;
+            }
+
             string name; int l, w;
             if (!inputStr(L"请输入校园名称：", name)) return;
             if (name.empty()) { showMsg(L"校园不能没有名字，就像西方不能失去耶路撒冷( ˘•ω•˘ )"); return; } // 防空
