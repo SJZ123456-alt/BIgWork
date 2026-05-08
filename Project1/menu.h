@@ -209,7 +209,9 @@ private:
 
             settextcolor(RGB(150, 150, 160));
             settextstyle(20, 0, L"微软雅黑", 0, 0, 700, false, false, false);
-            outtextxy(msX + 15, msY - 30, s2ws(map.getName()).c_str());
+            //outtextxy(msX + 15, msY - 30, s2ws(map.getName()).c_str());
+            wstring titleText = s2ws(map.getName()) + L" (大小: " + to_wstring((int)map.getLength()) + L" × " + to_wstring((int)map.getWidth()) + L")";
+            outtextxy(msX + 15, msY - 30, titleText.c_str());
 
             for (int i = 0; i < map.getBuildingCount(); ++i) {
                 const Building& p = map.getBuilding(i);

@@ -91,7 +91,8 @@ public:
             bool hover = (mouseX > boxX + 20 && mouseX < boxX + boxW - 20 && mouseY > itemY && mouseY < itemY + 45);
             drawSmoothRoundedRect(boxX + 20, itemY, boxW - 40, 45, 8, hover ? RGB(230, 242, 255) : RGB(245, 248, 250), hover ? RGB(100, 150, 255) : RGB(220, 225, 230), 1);
 
-            wstring text = L"地图 ID: " + to_wstring(appState.maps[i].getID()) + L"   |   " + s2ws(appState.maps[i].getName());
+            wstring text = L"地图 ID: " + to_wstring(appState.maps[i].getID()) + L"   |   " + s2ws(appState.maps[i].getName()) + L" (" + to_wstring((int)appState.maps[i].getLength()) + L"x" + to_wstring((int)appState.maps[i].getWidth()) + L")";
+            //wstring text = L"地图 ID: " + to_wstring(appState.maps[i].getID()) + L"   |   " + s2ws(appState.maps[i].getName());
             settextstyle(18, 0, L"微软雅黑", 0, 0, hover ? 700 : 400, false, false, false);
             settextcolor(hover ? RGB(30, 80, 200) : RGB(30, 30, 30));
             outtextxy(boxX + 40, itemY + 12, text.c_str());
